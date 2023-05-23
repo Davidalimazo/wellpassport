@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "parser": "eslint/parser",
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:eslint-config-next/recommended"
+  ],
+  "rules": {
+    "no-console": "warn" // Remember, this means error!
+  }
+}

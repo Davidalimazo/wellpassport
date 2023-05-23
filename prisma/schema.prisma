@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  CLIENT
+  ADMIN
+}
+enum CurrentStatus {
+  INPROGRESS
+  DRIED
+  INITIAL
+}
+
+type Superintendent{
+  name String
+  mobileNo String
+  email String
+}
+
+model Admin {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  email           String  @unique
+  image           String?
+  password        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  firstName       String
+  lastName        String
+
+  users    User[]
+  clients Client[]
+  fields Field[]
+  wells Well[]
+  projects Project[]
+  report Report[]
+}
+
+model Users {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  email           String  @unique
+  image           String?
+  password        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  firstName       String
+  lastName        String
+  role            Role @default(USER)
+}
+
+model User {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  email           String  @unique
+  image           String?
+  password        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  firstName       String
+  lastName        String
+  adminId         String @db.ObjectId
+
+  admin Admin @relation(fields: [adminId], references: [id])    
+  wells Well[]
+  projects Project[]
+  reports Report[]
+}
+
+model Client {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  adminId            String   @db.ObjectId
+  name               String
+  contactPerson      String
+  mobileNo           String
+  email              String  
+  website            String?  
+  address            String
+  password           String
+  image              String?
+
+  user Admin @relation(fields: [adminId], references: [id])
+
+  @@unique([email, mobileNo])
+}
+
+model Field {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  numberOfWells Int
+  longitude Float
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  latitude  Float
+  website   String
+  adminId   String @db.ObjectId
+  superintendent Superintendent
+
+  admin Admin @relation(fields: [adminId], references: [id])
+}
+
+model Well {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  longitude       Float
+  latitude        Float
+  treeSpecs       Float
+  status          CurrentStatus @default(INITIAL)
+  userId          String? @db.ObjectId
+  adminId         String? @db.ObjectId
+  spudDate        DateTime
+  firstProductionDate    DateTime
+  initialCompletionDate  DateTime
+  bitSize         Float
+  casting         Float
+  totalDepth      Float
+  turbingSize     Float
+  flowStation     String
+  image           String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  user User?       @relation(fields: [userId], references: [id])
+  admin Admin?     @relation(fields: [adminId], references: [id])
+}
+
+model Project {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String? @db.ObjectId
+  adminId         String? @db.ObjectId
+  startDate       DateTime
+  endDate         DateTime
+  rig             String
+  description     String
+  image           String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  user User?       @relation(fields: [userId], references: [id])
+  admin Admin?     @relation(fields: [adminId], references: [id])
+}
+
+model Report {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String? @db.ObjectId
+  adminId         String? @db.ObjectId
+  author          String
+  image           String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  user User?       @relation(fields: [userId], references: [id])
+  admin Admin?     @relation(fields: [adminId], references: [id])
+}
