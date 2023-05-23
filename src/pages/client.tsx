@@ -229,7 +229,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const arr = ['ADMIN', 'USER'];
 
-  if (session) {
+  if (!session || !arr.includes(session.user.role)) {
     return {
       redirect: {
         destination: '/field',

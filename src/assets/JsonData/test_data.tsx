@@ -91,64 +91,6 @@ export const projectData = [
   },
 ];
 
-export const fieldData = [
-  {
-    id: '0',
-    name: 'Atoi',
-    wells: 20,
-    image: oilField1,
-    longitude: 67.42,
-    latitude: 13.76,
-    createdDate: '13 May, 2023',
-    superintendent: {
-      name: 'Segun Oyebanji',
-      email: 'segunoye@exxon.com',
-      mobile: '+234 903 950 3369',
-    },
-  },
-  {
-    id: '1',
-    name: 'Lagbaja',
-    wells: 10,
-    image: oilField2,
-    longitude: 33.33,
-    latitude: 43.23,
-    createdDate: '1 April, 2023',
-    superintendent: {
-      name: 'Samuel Okoro',
-      email: 'samokoro@exxon.com',
-      mobile: '+234 903 950 3369',
-    },
-  },
-  {
-    id: '2',
-    name: 'Kimpasa',
-    wells: 20,
-    image: oilFieldSea,
-    longitude: 87.54,
-    latitude: 34.83,
-    createdDate: '28 March, 2023',
-    superintendent: {
-      name: 'Muhammed Sanni',
-      email: 'muhammedsan@exxon.com',
-      mobile: '+234 903 950 3369',
-    },
-  },
-  {
-    id: '3',
-    name: 'MLSQ',
-    wells: 20,
-    image: oilField1,
-    longitude: 51.63,
-    latitude: 38.23,
-    createdDate: '11 January, 2023',
-    superintendent: {
-      name: 'Osasoyen Osaro',
-      email: 'segunoye@exxon.com',
-      mobile: '+234 903 950 3369',
-    },
-  },
-];
 export const wellData = [
   {
     id: '0',
@@ -225,6 +167,87 @@ export const wellData = [
     initialCompletionDate: '13 June, 2023',
     firstProductionDate: '24 march, 2023',
     casing: 34.56,
+  },
+];
+
+
+export const fieldData = [
+  {
+    id: '0',
+    name: 'Atoi',
+    wells: 20,
+    image: oilField1,
+    longitude: 67.42,
+    latitude: 13.76,
+    createdDate: '13 May, 2023',
+    superintendent: {
+      name: 'Segun Oyebanji',
+      email: 'segunoye@exxon.com',
+      mobile: '+234 903 950 3369',
+    },
+    fieldWellData:[...wellData]
+  },
+  {
+    id: '1',
+    name: 'Lagbaja',
+    wells: 10,
+    image: oilField2,
+    longitude: 33.33,
+    latitude: 43.23,
+    createdDate: '1 April, 2023',
+    superintendent: {
+      name: 'Samuel Okoro',
+      email: 'samokoro@exxon.com',
+      mobile: '+234 903 950 3369',
+    },
+    fieldWellData:[ {
+      id: '3',
+      name: 'Pork GLk',
+      wellType: 'MakaY',
+      image: well1,
+      longitude: 10.14,
+      latitude: 60.12,
+      createdDate: '13 May, 2023',
+      treeSpecs: 'Mech ENG',
+      bitSize: 78.46,
+      currentStatus: 'Active',
+      totalDepth: '345km',
+      turbingSize: 23.56,
+      flowStation: 'Zen lee',
+      spudDate: '12 May, 2023',
+      initialCompletionDate: '13 June, 2023',
+      firstProductionDate: '24 march, 2023',
+      casing: 34.56,
+    },]
+  },
+  {
+    id: '2',
+    name: 'Kimpasa',
+    wells: 20,
+    image: oilFieldSea,
+    longitude: 87.54,
+    latitude: 34.83,
+    createdDate: '28 March, 2023',
+    superintendent: {
+      name: 'Muhammed Sanni',
+      email: 'muhammedsan@exxon.com',
+      mobile: '+234 903 950 3369',
+    },
+    fieldWellData:[...wellData]
+  },
+  {
+    id: '3',
+    name: 'MLSQ',
+    wells: 20,
+    image: oilField1,
+    longitude: 51.63,
+    latitude: 38.23,
+    createdDate: '11 January, 2023',
+    superintendent: {
+      name: 'Osasoyen Osaro',
+      email: 'segunoye@exxon.com',
+      mobile: '+234 903 950 3369',
+    },
   },
 ];
 

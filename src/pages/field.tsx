@@ -70,10 +70,18 @@ const FiledListUI = () => {
     setIndex(idx);
   };
 
-  // if (!setFieldFun.clientId) {
-  //   return <NoClientId />;
-  // }
+  if (!setFieldFun.clientId) {
+    return <NoClientId />;
+  }
+  let clientDetails = clientData.find(({ id }) => id === setFieldFun.clientId);
 
+  let fieldClientData = clientData.find(
+    ({ id }) => id === setFieldFun.clientId
+  )?.clientFieldData;
+
+  if (fieldClientData && fieldClientData?.length < 1) {
+    return <>NO Field Data for this client</>;
+  }
   return (
     <>
       <Head>
@@ -113,7 +121,7 @@ const FiledListUI = () => {
         </div>
         <div className="flex flex-col sm:flex-col md:flex-row lg-flex-row items-center justify-between px-6 pb-2">
           <div className="text-[20px] tracking-wide font-bold font-lekton">
-            {setFieldFun.clientId} Field List
+            {clientDetails?.name} | Field List
           </div>
           {data?.user.role === 'ADMIN' ? (
             <div className="text-center flex flex-row items-center">
@@ -131,7 +139,7 @@ const FiledListUI = () => {
           ) : null}
         </div>
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
-          {fieldData.map(
+          {fieldClientData?.map(
             ({
               id,
               name,
