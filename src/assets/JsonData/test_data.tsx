@@ -170,7 +170,6 @@ export const wellData = [
   },
 ];
 
-
 export const fieldData = [
   {
     id: '0',
@@ -185,7 +184,7 @@ export const fieldData = [
       email: 'segunoye@exxon.com',
       mobile: '+234 903 950 3369',
     },
-    fieldWellData:[...wellData]
+    fieldWellData: [],
   },
   {
     id: '1',
@@ -200,25 +199,27 @@ export const fieldData = [
       email: 'samokoro@exxon.com',
       mobile: '+234 903 950 3369',
     },
-    fieldWellData:[ {
-      id: '3',
-      name: 'Pork GLk',
-      wellType: 'MakaY',
-      image: well1,
-      longitude: 10.14,
-      latitude: 60.12,
-      createdDate: '13 May, 2023',
-      treeSpecs: 'Mech ENG',
-      bitSize: 78.46,
-      currentStatus: 'Active',
-      totalDepth: '345km',
-      turbingSize: 23.56,
-      flowStation: 'Zen lee',
-      spudDate: '12 May, 2023',
-      initialCompletionDate: '13 June, 2023',
-      firstProductionDate: '24 march, 2023',
-      casing: 34.56,
-    },]
+    fieldWellData: [
+      {
+        id: '3',
+        name: 'Pork GLk',
+        wellType: 'MakaY',
+        image: well1,
+        longitude: 10.14,
+        latitude: 60.12,
+        createdDate: '13 May, 2023',
+        treeSpecs: 'Mech ENG',
+        bitSize: 78.46,
+        currentStatus: 'Active',
+        totalDepth: '345km',
+        turbingSize: 23.56,
+        flowStation: 'Zen lee',
+        spudDate: '12 May, 2023',
+        initialCompletionDate: '13 June, 2023',
+        firstProductionDate: '24 march, 2023',
+        casing: 34.56,
+      },
+    ],
   },
   {
     id: '2',
@@ -233,7 +234,46 @@ export const fieldData = [
       email: 'muhammedsan@exxon.com',
       mobile: '+234 903 950 3369',
     },
-    fieldWellData:[...wellData]
+    fieldWellData: [
+      {
+        id: '1',
+        name: 'Xoxo RXC',
+        wellType: 'Imela',
+        image: well2,
+        longitude: 83.31,
+        latitude: 45.25,
+        createdDate: '13 May, 2023',
+        treeSpecs: 'Skey Save',
+        bitSize: 78.46,
+        currentStatus: 'Dull',
+        totalDepth: '345km',
+        turbingSize: 23.56,
+        flowStation: 'Zen lee',
+        spudDate: '12 May, 2023',
+        initialCompletionDate: '13 June, 2023',
+        firstProductionDate: '24 march, 2023',
+        casing: 34.56,
+      },
+      {
+        id: '2',
+        name: 'Maple MLG',
+        wellType: 'Segwest',
+        image: well3,
+        longitude: 96.82,
+        latitude: 26.53,
+        createdDate: '13 May, 2023',
+        treeSpecs: 'Sig Mech',
+        bitSize: 78.46,
+        currentStatus: 'Dull',
+        totalDepth: '345km',
+        turbingSize: 23.56,
+        flowStation: 'Zen lee',
+        spudDate: '12 May, 2023',
+        initialCompletionDate: '13 June, 2023',
+        firstProductionDate: '24 march, 2023',
+        casing: 34.56,
+      },
+    ],
   },
   {
     id: '3',
@@ -248,6 +288,7 @@ export const fieldData = [
       email: 'segunoye@exxon.com',
       mobile: '+234 903 950 3369',
     },
+    fieldWellData: [...wellData],
   },
 ];
 
