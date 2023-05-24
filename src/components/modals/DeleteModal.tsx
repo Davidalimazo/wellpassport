@@ -10,12 +10,20 @@ import Image from 'next/image';
 interface ViewModalProps {
   open: () => void;
   close: () => void;
+  onDelete: (id: string) => void;
   opened: boolean;
   text: string;
   id: string;
 }
 
-const DeleteModal: FC<ViewModalProps> = ({ open, opened, close, text }) => {
+const DeleteModal: FC<ViewModalProps> = ({
+  open,
+  opened,
+  close,
+  text,
+  onDelete,
+  id,
+}) => {
   return (
     <>
       <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
@@ -28,11 +36,17 @@ const DeleteModal: FC<ViewModalProps> = ({ open, opened, close, text }) => {
           </div>
 
           <div className="space-x-4 flex flex-row items-center justify-center">
-            <Button children="Cancel" variant="filled" className="w-[150px]" />
+            <Button
+              children="Cancel"
+              variant="filled"
+              className="w-[150px]"
+              onClick={close}
+            />
             <Button
               children="Proceed"
               variant="outline_red"
               className="text-red-500 w-[150px]"
+              onClick={() => onDelete(id)}
             />
           </div>
         </div>

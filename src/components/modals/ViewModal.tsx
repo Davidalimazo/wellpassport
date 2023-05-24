@@ -58,10 +58,10 @@ const ViewModal: FC<ViewModalProps> = ({
           </div>
           <div className="flex flex-row gap-6 items-center justify-center">
             <Button
-              children="Action"
+              children="Close"
               variant="filled"
               className="font-lekton h-[28px] w-[122px]"
-              disabled
+              onClick={close}
             />
             <Button
               onClick={() => setFielD(clientData?.id)}

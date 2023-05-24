@@ -1,6 +1,6 @@
 import { getSession, signOut } from 'next-auth/react';
 import Head from 'next/head';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import prisma from '@/lib/prismadb';
 import dynamic from 'next/dynamic';
@@ -14,7 +14,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { clientData } from '@/assets/JsonData/test_data';
 import { useEffect, useState } from 'react';
 import PaginatedItems from '@/components/Paginate';
-
+import mobil from '@/assets/images/mobil.jpg';
 import { useDisclosure } from '@mantine/hooks';
 import ViewModal from '@/components/modals/ViewModal';
 import Button from '@/components/buttons/Button';
@@ -42,23 +42,39 @@ export interface ClientDataProp {
   createdDate: string;
 }
 
-const ClientListUi: NextPage = () => {
+//@ts-ignore
+
+const ClientListUi: NextPage = ({ clients }) => {
   const itemData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
   const [index, setIndex] = useState('0');
   const { status, data } = useSession();
+  const [cachedData, setCachedDta] = useState([...clientData]);
+
+  console.log(clients);
 
   const [currData, setCurrData] = useState<ClientDataProp | null>(
-    clientData[0]
+    cachedData.length > 0 ? cachedData[0] : null
   );
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const [openedAddModal, { open: openAddModal, close: onClose }] =
-    useDisclosure(false);
-  const [openedEditModal, { open: openEditModal, close: onCloseEdit }] =
-    useDisclosure(false);
-  const [openedDeleteModal, { open: openDeleteModal, close: onCloseDelete }] =
-    useDisclosure(false);
+  const handleDelete = (id: string) => {
+    const filteredData = cachedData.filter((item) => item.id !== id);
+    setCachedDta(filteredData);
+  };
+
+  const [
+    openedAddModal,
+    { open: openAddModal, close: onClose },
+  ] = useDisclosure(false);
+  const [
+    openedEditModal,
+    { open: openEditModal, close: onCloseEdit },
+  ] = useDisclosure(false);
+  const [
+    openedDeleteModal,
+    { open: openDeleteModal, close: onCloseDelete },
+  ] = useDisclosure(false);
 
   const hadnleClick = (idx: string) => {
     setIndex(idx);
@@ -109,7 +125,7 @@ const ClientListUi: NextPage = () => {
           ) : null}
         </div>
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
-          {clientData.map(
+          {cachedData.map(
             ({ id, name, contactperson, website, image, ...rest }) => (
               <div
                 className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
@@ -160,6 +176,14 @@ const ClientListUi: NextPage = () => {
                         <AiFillEdit onClick={openEditModal} />
 
                         <MdDeleteForever onClick={openDeleteModal} />
+                        <DeleteModal
+                          open={openDeleteModal}
+                          opened={openedDeleteModal}
+                          close={onCloseDelete}
+                          text="Are you sure you want to delete this client"
+                          id={id}
+                          onDelete={() => handleDelete(id)}
+                        />
                       </>
                     ) : (
                       <AiFillEye onClick={open} />
@@ -194,13 +218,6 @@ const ClientListUi: NextPage = () => {
         title="EDIT CLIENT INFORMATION"
         clientData={currData}
         isEdit
-      />
-      <DeleteModal
-        open={openDeleteModal}
-        opened={openedDeleteModal}
-        close={onCloseDelete}
-        text="Are you sure you want to delete this client"
-        id={currData!.id}
       />
     </>
   );
@@ -237,7 +254,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
+  const clients = await prisma.client.findMany();
   return {
-    props: { session },
+    props: { session, clients },
   };
 }

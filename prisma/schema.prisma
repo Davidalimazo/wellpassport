@@ -37,12 +37,6 @@ model Admin {
   firstName       String
   lastName        String
 
-  users    User[]
-  clients Client[]
-  fields Field[]
-  wells Well[]
-  projects Project[]
-  report Report[]
 }
 
 model Users {
@@ -68,42 +62,38 @@ model User {
   lastName        String
   adminId         String @db.ObjectId
 
-  admin Admin @relation(fields: [adminId], references: [id])    
-  wells Well[]
-  projects Project[]
-  reports Report[]
 }
 
 model Client {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  adminId            String   @db.ObjectId
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
   name               String
   contactPerson      String
-  mobileNo           String
-  email              String  
+  mobile             String
   website            String?  
   address            String
-  password           String
   image              String?
+  field              Field[]
+  createdDate        DateTime @default(now())
 
-  user Admin @relation(fields: [adminId], references: [id])
 
-  @@unique([email, mobileNo])
+  @@unique([mobile])
 }
 
 model Field {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   numberOfWells Int
+  name      String
   longitude Float
-  image     String
+  image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   latitude  Float
   website   String
-  adminId   String @db.ObjectId
   superintendent Superintendent
+  clientId  String @db.ObjectId
+  well      Well[]
 
-  admin Admin @relation(fields: [adminId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
 }
 
 model Well {
@@ -113,8 +103,7 @@ model Well {
   latitude        Float
   treeSpecs       Float
   status          CurrentStatus @default(INITIAL)
-  userId          String? @db.ObjectId
-  adminId         String? @db.ObjectId
+  fieldId         String @db.ObjectId
   spudDate        DateTime
   firstProductionDate    DateTime
   initialCompletionDate  DateTime
@@ -123,18 +112,17 @@ model Well {
   totalDepth      Float
   turbingSize     Float
   flowStation     String
-  image           String
+  image           String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
+  project         Project[]
 
-  user User?       @relation(fields: [userId], references: [id])
-  admin Admin?     @relation(fields: [adminId], references: [id])
+  field  Field     @relation(fields: [fieldId], references: [id])
 }
 
 model Project {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String? @db.ObjectId
-  adminId         String? @db.ObjectId
+  wellId          String @db.ObjectId
   startDate       DateTime
   endDate         DateTime
   rig             String
@@ -142,20 +130,24 @@ model Project {
   image           String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
+  report          Report[]
 
-  user User?       @relation(fields: [userId], references: [id])
-  admin Admin?     @relation(fields: [adminId], references: [id])
+  well Well       @relation(fields: [wellId], references: [id])
 }
 
 model Report {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String? @db.ObjectId
-  adminId         String? @db.ObjectId
+  projectId       String @db.ObjectId
   author          String
   image           String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @default(now())
 
-  user User?       @relation(fields: [userId], references: [id])
-  admin Admin?     @relation(fields: [adminId], references: [id])
+  project Project      @relation(fields: [projectId], references: [id])
+}
+
+model Recycled{
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  file   String
+  name   String
 }
