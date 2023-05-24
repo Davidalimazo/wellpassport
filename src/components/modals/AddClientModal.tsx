@@ -47,7 +47,16 @@ const AddClientModal: FC<ViewModalProps> = ({
     clearErrors,
     getValues,
     reset,
-  } = useForm<FieldsValues>();
+  } = useForm<FieldsValues>({
+    defaultValues: {
+      name: isEdit ? clientData?.name : '',
+      contactPerson: isEdit ? clientData?.contactPerson : '',
+      mobile: isEdit ? clientData?.mobile : '',
+      website: isEdit ? clientData?.website : '',
+      address: isEdit ? clientData?.address : '',
+      email: isEdit ? clientData?.email : '',
+    },
+  });
 
   const { errors, isDirty, isValid, isSubmitting } = formState;
 
@@ -55,21 +64,36 @@ const AddClientModal: FC<ViewModalProps> = ({
     let { name, contactPerson, mobile, website, address, email } = data;
 
     try {
-      const post = await axios.post('http://localhost:3000/api/addclient', {
-        name,
-        contactPerson,
-        mobile,
-        website,
-        address,
-        email,
-      });
-      const res = await post.data;
-      if (res.data.status === 200) {
-        toast.success('Account created successfully');
-        reset();
-        router.reload();
+      if (isEdit) {
+        const post = await axios.put('http://localhost:3000/api/updateclient', {
+          data,
+          id: clientData?.id,
+        });
+        const res = await post.data;
+        if (res.data.status === 200) {
+          toast.success('Client update successfully');
+          reset();
+          router.reload();
+        } else {
+          toast.error('failed to create account');
+        }
       } else {
-        toast.error('failed to create account');
+        const post = await axios.post('http://localhost:3000/api/addclient', {
+          name,
+          contactPerson,
+          mobile,
+          website,
+          address,
+          email,
+        });
+        const res = await post.data;
+        if (res.data.status === 200) {
+          toast.success('Account created successfully');
+          reset();
+          router.reload();
+        } else {
+          toast.error('failed to create account');
+        }
       }
     } catch (error) {
       toast.error('An error occurred, please try again');
@@ -85,6 +109,7 @@ const AddClientModal: FC<ViewModalProps> = ({
           <form
             className="pt-8 px-2 sm:px-6 md:px-6 lg:px-6"
             onSubmit={handleSubmit(onSubmit)}
+            autoComplete="off"
           >
             <div className="flex flex-col sm:items-center md:items-center lg:items-center sm:flex-row md:flex-row lg:flex-row justify-between mb-4">
               <div className="space-y-4">
@@ -100,7 +125,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                       placeholder={isEdit ? clientData?.name : ''}
                       {...register('name', {
                         required: {
-                          value: true,
+                          value: isEdit ? false : true,
                           message: 'name is required',
                         },
                       })}
@@ -127,7 +152,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                       placeholder={isEdit ? clientData?.contactPerson : ''}
                       {...register('contactPerson', {
                         required: {
-                          value: true,
+                          value: isEdit ? false : true,
                           message: 'contact person name is required',
                         },
                       })}
@@ -154,7 +179,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                       placeholder={isEdit ? clientData?.mobile : ''}
                       {...register('mobile', {
                         required: {
-                          value: true,
+                          value: isEdit ? false : true,
                           message: 'mobile is required',
                         },
                       })}
@@ -179,7 +204,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                       placeholder={isEdit ? clientData?.website : ''}
                       {...register('website', {
                         required: {
-                          value: true,
+                          value: isEdit ? false : true,
                           message: 'website is required',
                         },
                       })}
@@ -212,16 +237,17 @@ const AddClientModal: FC<ViewModalProps> = ({
                               e.target.value
                             )
                           ) {
-                            setError('email', {
-                              type: 'pattern',
-                              message: 'invalid email format',
-                            });
+                            !isEdit &&
+                              setError('email', {
+                                type: 'pattern',
+                                message: 'invalid email format',
+                              });
                           } else {
                             clearErrors('email');
                           }
                         },
                         required: {
-                          value: true,
+                          value: isEdit ? false : true,
                           message: 'email is required',
                         },
                         pattern: {
@@ -251,7 +277,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                       placeholder={isEdit ? clientData?.address : ''}
                       {...register('address', {
                         required: {
-                          value: true,
+                          value: isEdit ? false : true,
                           message: 'address is required',
                         },
                       })}

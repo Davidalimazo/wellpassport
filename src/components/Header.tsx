@@ -28,7 +28,7 @@ const Header: FC<HeaderProps> = ({}) => {
                 color="blue"
                 className="cursor-pointer"
               >
-                DA
+                {data?.user?.lastName?.slice(0, 2).toUpperCase()}
               </Avatar>
             }
             options={menu}

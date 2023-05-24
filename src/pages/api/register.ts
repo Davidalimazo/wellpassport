@@ -41,6 +41,7 @@ export default async function handler(
           from: 'itteam@zamam.com',
           reciever: email,
           role,
+          name: firstName,
           url: {
             code: passwordToken,
             base: 'http://localhost:3000',
@@ -51,8 +52,9 @@ export default async function handler(
           message: 'New account created successfully',
           data: { status: 200 },
         });
-      } catch (error: any) {
+      } catch (error) {
         return res.status(200).json({
+          //@ts-ignore
           message: error.message,
           data: { status: 400 },
         });

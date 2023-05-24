@@ -26,8 +26,11 @@ const ViewModal: FC<ViewModalProps> = ({
   clientData,
 }) => {
   const setFieldFun = useSetField();
-  const setFielD = (clientId: string | undefined) => {
-    setFieldFun.setField(clientId);
+  const setFielD = (
+    clientId: string | undefined,
+    clientName: string | undefined
+  ) => {
+    setFieldFun.setField(clientId, clientName);
     router.push('/field');
   };
 
@@ -70,7 +73,7 @@ const ViewModal: FC<ViewModalProps> = ({
             />
             <Button
               onClick={() => {
-                setFielD(clientData?.id);
+                setFielD(clientData?.id, clientData?.name);
                 close();
               }}
               children="Fields"
@@ -89,7 +92,7 @@ const ViewModal: FC<ViewModalProps> = ({
                   {clientData?.name}
                 </div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-4 w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <FaUser className="text-gray-500" />
                   <span className="text-gray-400">Contact Person</span>
@@ -109,9 +112,7 @@ const ViewModal: FC<ViewModalProps> = ({
                   {clientData?.mobile}
                 </div>
               </div>
-            </div>
-            <div className="flex flex-row items-center justify-between mb-4">
-              <div className="space-y-4">
+              <div className="space-y- w-2/5">
                 <div className="flex flex-row items-center gap-3">
                   <IoCall className="text-gray-500" />
                   <span className="text-gray-400">Website</span>
@@ -121,6 +122,7 @@ const ViewModal: FC<ViewModalProps> = ({
                 </div>
               </div>
             </div>
+
             <div className="flex flex-row items-center justify-between mb-4">
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
@@ -129,6 +131,15 @@ const ViewModal: FC<ViewModalProps> = ({
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
                   {clientData?.email}
+                </div>
+              </div>
+              <div className="space-y-4 w-2/5">
+                <div className="flex flex-row items-center gap-3">
+                  <IoCall className="text-gray-500" />
+                  <span className="text-gray-400">Created Date</span>
+                </div>
+                <div className="text-lg font-lekton font-bold pl-8">
+                  {formattedDate}
                 </div>
               </div>
             </div>
@@ -140,17 +151,6 @@ const ViewModal: FC<ViewModalProps> = ({
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
                   {clientData?.address}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-row items-center justify-between mb-4">
-              <div className="space-y-4">
-                <div className="flex flex-row items-center gap-3">
-                  <IoCall className="text-gray-500" />
-                  <span className="text-gray-400">Created Date</span>
-                </div>
-                <div className="text-lg font-lekton font-bold pl-8">
-                  {formattedDate}
                 </div>
               </div>
             </div>

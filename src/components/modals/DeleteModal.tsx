@@ -24,6 +24,7 @@ const DeleteModal: FC<ViewModalProps> = ({
   onDelete,
   id,
 }) => {
+ 
   return (
     <>
       <Modal radius={'md'} size="lg" opened={opened} onClose={close}>

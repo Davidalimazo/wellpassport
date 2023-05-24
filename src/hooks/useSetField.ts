@@ -4,13 +4,15 @@ import { create } from 'zustand';
 
 interface Props {
   clientId: string | undefined;
-  setField: (field: string | undefined) => void;
+  clientName: string | undefined;
+  setField: (id: string | undefined, name: string | undefined) => void;
 }
 
 const useSetField = create<Props>((set) => ({
   clientId: undefined,
-  setField: async (prop: string | undefined) => {
-    set({ clientId: prop });
+  clientName: undefined,
+  setField: async (id: string | undefined, name: string | undefined) => {
+    set((state) => ({ ...state, clientId: id, clientName: name }));
   },
 }));
 

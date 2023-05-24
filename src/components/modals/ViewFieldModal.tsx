@@ -90,7 +90,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Number of wells</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.wells}
+                  {clientData?.numberOfWells}
                 </div>
               </div>
             </div>
@@ -133,7 +133,7 @@ const ViewFieldModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Mobile</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.superintendent.mobile}
+                  {clientData?.superintendent.mobileNo}
                 </div>
               </div>
             </div>

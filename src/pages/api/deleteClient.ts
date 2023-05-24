@@ -17,34 +17,20 @@ export default async function handler(
 ) {
   const reqMethod = req.method;
 
+  console.log(req.body)
+
   switch (reqMethod) {
-    case 'POST':
+    case 'DELETE':
       try {
-        const {
-          name,
-          numberOfWells,
-          longitude,
-          latitude,
-          clientId,
-          superintendent,
-          client,
-        } = req.body;
+        const user = await prisma.client.delete({
+          where: {
+            id: req.body,
+          },
+        });
 
-        console.log(req.body);
-
-        // const user = await prisma.field.create({
-        //   data: {
-        //     name,
-        //     numberOfWells,
-        //     latitude,
-        //     longitude,
-        //     clientId,
-        //     superintendent,
-        //   },
-        // });
-
+        
         return res.status(200).json({
-          message: 'New field created successfully',
+          message: 'Client successfully deleted',
           data: { status: 200 },
         });
       } catch (error) {

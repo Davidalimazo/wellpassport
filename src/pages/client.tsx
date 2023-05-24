@@ -14,7 +14,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { clientData } from '@/assets/JsonData/test_data';
 import { useEffect, useState } from 'react';
 import PaginatedItems from '@/components/Paginate';
-import mobil from '@/assets/images/mobil.jpg';
+import placeholderImg from '@/assets/images/placeholderImg.png';
 import { useDisclosure } from '@mantine/hooks';
 import ViewModal from '@/components/modals/ViewModal';
 import Button from '@/components/buttons/Button';
@@ -27,6 +27,7 @@ import { toast } from 'react-hot-toast';
 import Header from '@/components/Header';
 import { Client } from '@prisma/client';
 import { format } from 'date-fns';
+import axios from 'axios';
 
 // const MainDashboard = dynamic(
 //   async () => await import('@/components/dashboard/MainDashboard'),
@@ -52,17 +53,26 @@ const ClientListUi: NextPage = ({ document }) => {
   const [index, setIndex] = useState(0);
   const [clientId, setClientId] = useState('');
   const { status, data } = useSession();
-  const [cachedData, setCachedDta] = useState([...document]);
+  const [cachedData, setCachedDta] = useState<Array<any> | null>(
+    document ? [...document] : null
+  );
 
   const [currData, setCurrData] = useState<ClientDataProp | null>(
-    cachedData.length > 0 ? cachedData[0] : null
+    cachedData && cachedData.length > 0 ? cachedData[0] : null
   );
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const handleDelete = (id: string) => {
-    const filteredData = cachedData.filter((item) => item.id !== id);
-    setCachedDta(filteredData);
+  const handleDelete = async (id: string) => {
+    const post = await axios
+      .delete('http://localhost:3000/api/deleteClient', { data: id })
+      .then((res) => {
+        toast.success('Client deleted succcessfully');
+        router.reload();
+      })
+      .catch((err) =>
+        toast.error('An error while deleting post ' + err.message)
+      );
   };
 
   const [
@@ -127,73 +137,85 @@ const ClientListUi: NextPage = ({ document }) => {
           ) : null}
         </div>
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
-          {cachedData.map((item: any) => (
-            <div
-              className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
-                item.id === index
-                  ? 'ring-2 ring-red-500'
-                  : 'ring-2 ring-[#E7E6E6]'
-              }`}
-              key={item.id}
-              onClick={() => {
-                hadnleClick(item.id);
-                setCurrData({
-                  id: item.id,
-                  name: item.name,
-                  contactperson: item.contactPerson,
-                  website: item.website,
-                  image: item?.image,
-                  ...item,
-                });
-              }}
-            >
-              <div className="flex flex-row gap-6 items-center">
-                <Image src={mobil} width={130} height={89} alt="exxon" />
-                <div className="text-lg font-lekton font-semibold hidden sm:block md:block lg:block">
-                  <div className="">
-                    <span className="text-grey-200">Client Name: </span>
-                    <span className="font-bold">{item.name}</span>
-                  </div>
-                  <div className="">
-                    <span className="text-grey-200">Contact Person: </span>
-                    <span className="font-semibold">{item.contactPerson}</span>
-                  </div>
-                  <div className="">
-                    <span className="text-grey-200">Website: </span>
-                    <Link
-                      href={item.website}
-                      target="_blank"
-                      className="font-bold underline"
-                    >
-                      {item.website}
-                    </Link>
+          {cachedData &&
+            cachedData.map((item: any) => (
+              <div
+                className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
+                  item.id === index
+                    ? 'ring-2 ring-red-500'
+                    : 'ring-2 ring-[#E7E6E6]'
+                }`}
+                key={item.id}
+                onClick={() => {
+                  hadnleClick(item.id);
+                  setCurrData({
+                    id: item.id,
+                    name: item.name,
+                    contactperson: item.contactPerson,
+                    website: item.website,
+                    image: item?.image,
+                    ...item,
+                  });
+                }}
+              >
+                <div className="flex flex-row gap-6 items-center">
+                  <Image
+                    src={placeholderImg}
+                    width={130}
+                    height={89}
+                    alt="exxon"
+                  />
+                  <div className="text-lg font-lekton font-semibold hidden sm:block md:block lg:block">
+                    <div className="">
+                      <span className="text-grey-200">Client Name: </span>
+                      <span className="font-bold">{item.name}</span>
+                    </div>
+                    <div className="">
+                      <span className="text-grey-200">Contact Person: </span>
+                      <span className="font-semibold">
+                        {item.contactPerson}
+                      </span>
+                    </div>
+                    <div className="">
+                      <span className="text-grey-200">Website: </span>
+                      <Link
+                        href={item.website}
+                        target="_blank"
+                        className="font-bold underline"
+                      >
+                        {item.website}
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-              {index === item.id ? (
-                <div className="text-lg flex flex-row gap-3">
-                  {data?.user.role === 'ADMIN' ? (
-                    <>
+                {index === item.id ? (
+                  <div className="text-lg flex flex-row gap-3">
+                    {data?.user.role === 'ADMIN' ? (
+                      <>
+                        <AiFillEye onClick={open} />
+
+                        <AiFillEdit onClick={openEditModal} />
+
+                        <MdDeleteForever
+                          onClick={() => {
+                            openDeleteModal();
+                            setClientId(item.id);
+                          }}
+                        />
+                      </>
+                    ) : (
                       <AiFillEye onClick={open} />
-
-                      <AiFillEdit onClick={openEditModal} />
-
-                      <MdDeleteForever
-                        onClick={() => {
-                          openDeleteModal();
-                          setClientId(item.id);
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <AiFillEye onClick={open} />
-                  )}
-                </div>
-              ) : null}
-            </div>
-          ))}
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            ))}
           <div className="my-6 flex flex-row items-center justify-center">
-            <PaginatedItems itemsPerPage={4} items={itemData} />
+            {cachedData && cachedData.length < 1 ? (
+              <p>No Fields Available</p>
+            ) : (
+              <PaginatedItems itemsPerPage={4} items={itemData} />
+            )}
           </div>
         </div>
       </div>
@@ -276,10 +298,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const documents = await prisma.client.findMany({});
   const clients = documents.map((user) => ({
     ...user,
-    createdDate: user.createdDate.toString(),
+    createdDate: user.createdDate ? user.createdDate.toString() : null,
   }));
 
   return {
-    props: { session, document: clients },
+    props: { session, document: clients ? clients : null },
   };
 }

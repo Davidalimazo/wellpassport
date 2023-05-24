@@ -4,6 +4,7 @@ interface Props {
   reciever: string;
   role: string;
   from: string;
+  name: string;
   url: { code: string; base: string };
 }
 
@@ -12,6 +13,7 @@ export async function sendVerificationRequest({
   url,
   from,
   role,
+  name,
 }: Props) {
   const { hostname, href } = new URL('login', url.base);
 
@@ -30,7 +32,7 @@ export async function sendVerificationRequest({
     from: from,
     subject: `Zamam | New Account`,
     text: 'Your account has being created',
-    html: html({ url: href, token: url.code, email: reciever, role }),
+    html: html({ url: href, token: url.code, email: reciever, role, name }),
   });
   const failed = result.rejected.concat(result.pending).filter(Boolean);
   if (failed.length) {
@@ -52,8 +54,9 @@ function html(params: {
   token: string;
   email: string;
   role: string;
+  name:string
 }) {
-  const { url, token, email, role } = params;
+  const { url, token, email, role, name } = params;
 
   //  const escapedHost = host.replace(/\./g, "&#8203;.");
 
@@ -75,7 +78,7 @@ function html(params: {
  </tr>
  <tr style="margin-top: 15px;">
    <td style="padding:0; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: bold;">
-     Hi, 
+     Hi ${name}, 
    </td>
  </tr>
  <tr>

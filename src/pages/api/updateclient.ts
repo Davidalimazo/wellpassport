@@ -18,33 +18,21 @@ export default async function handler(
   const reqMethod = req.method;
 
   switch (reqMethod) {
-    case 'POST':
+    case 'PUT':
       try {
-        const {
-          name,
-          numberOfWells,
-          longitude,
-          latitude,
-          clientId,
-          superintendent,
-          client,
-        } = req.body;
+        const { id, data } = req.body;
 
-        console.log(req.body);
+        console.log(id, data);
 
-        // const user = await prisma.field.create({
-        //   data: {
-        //     name,
-        //     numberOfWells,
-        //     latitude,
-        //     longitude,
-        //     clientId,
-        //     superintendent,
-        //   },
-        // });
+        const user = await prisma.client.update({
+          where: {
+            id: id,
+          },
+          data: data,
+        });
 
         return res.status(200).json({
-          message: 'New field created successfully',
+          message: 'New client created successfully',
           data: { status: 200 },
         });
       } catch (error) {
