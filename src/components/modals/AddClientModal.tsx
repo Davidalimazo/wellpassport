@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import router from 'next/router';
+import { MdEmail } from 'react-icons/md';
 
 interface ViewModalProps {
   open: () => void;
@@ -27,6 +28,7 @@ interface FieldsValues {
   mobile: string;
   website: string;
   address: string;
+  email: string;
 }
 
 const AddClientModal: FC<ViewModalProps> = ({
@@ -50,7 +52,7 @@ const AddClientModal: FC<ViewModalProps> = ({
   const { errors, isDirty, isValid, isSubmitting } = formState;
 
   const onSubmit = async (data: FieldsValues) => {
-    let { name, contactPerson, mobile, website, address } = data;
+    let { name, contactPerson, mobile, website, address, email } = data;
 
     try {
       const post = await axios.post('http://localhost:3000/api/addclient', {
@@ -59,12 +61,13 @@ const AddClientModal: FC<ViewModalProps> = ({
         mobile,
         website,
         address,
+        email,
       });
       const res = await post.data;
       if (res.data.status === 200) {
         toast.success('Account created successfully');
         reset();
-        router.push('/client');
+        router.reload();
       } else {
         toast.error('failed to create account');
       }
@@ -121,7 +124,7 @@ const AddClientModal: FC<ViewModalProps> = ({
                     <Input
                       radius="lg"
                       size="md"
-                      placeholder={isEdit ? clientData?.contactperson : ''}
+                      placeholder={isEdit ? clientData?.contactPerson : ''}
                       {...register('contactPerson', {
                         required: {
                           value: true,
@@ -183,6 +186,51 @@ const AddClientModal: FC<ViewModalProps> = ({
                       error={
                         errors.website?.message &&
                         errors.website.message.length > 0
+                      }
+                    />
+                  </Input.Wrapper>
+                </div>
+              </div>
+            </div>
+            <div className="mb-4">
+              <div className="space-y-4">
+                <div className="flex flex-row items-center gap-3">
+                  <MdEmail className="text-gray-500" />
+                  <span className="text-gray-400">Email</span>
+                </div>
+                <div className="text-lg font-lekton sm:pl-8 md:pl-8 lg:pl-8 w-full">
+                  <Input.Wrapper id="email" error={errors.email?.message}>
+                    <Input
+                      radius="lg"
+                      size="lg"
+                      placeholder={isEdit ? clientData?.address : ''}
+                      {...register('email', {
+                        onBlur: (e) => {
+                          if (
+                            !e.target.value ||
+                            !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+                              e.target.value
+                            )
+                          ) {
+                            setError('email', {
+                              type: 'pattern',
+                              message: 'invalid email format',
+                            });
+                          } else {
+                            clearErrors('email');
+                          }
+                        },
+                        required: {
+                          value: true,
+                          message: 'email is required',
+                        },
+                        pattern: {
+                          value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                          message: 'please enter a valid email',
+                        },
+                      })}
+                      error={
+                        errors.email?.message && errors.email.message.length > 0
                       }
                     />
                   </Input.Wrapper>

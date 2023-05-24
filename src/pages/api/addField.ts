@@ -22,26 +22,28 @@ export default async function handler(
       try {
         const {
           name,
-          contactPerson,
-          mobile,
-          website,
-          address,
-          email,
+          numberOfWells,
+          longitude,
+          latitude,
+          clientId,
+          superintendent,
+          client,
         } = req.body;
 
-        const user = await prisma.client.create({
+        const user = await prisma.field.create({
           data: {
             name,
-            contactPerson,
-            mobile,
-            website,
-            address,
-            email,
+            numberOfWells,
+            longitude,
+            latitude,
+            clientId,
+            superintendent,
+            client,
           },
         });
 
         return res.status(200).json({
-          message: 'New client created successfully',
+          message: 'New field created successfully',
           data: { status: 200 },
         });
       } catch (error) {

@@ -69,14 +69,15 @@ model Client {
   name               String
   contactPerson      String
   mobile             String
-  website            String?  
+  email              String 
+  website            String 
   address            String
   image              String?
-  field              Field[]
   createdDate        DateTime @default(now())
+  field              Field[]
 
 
-  @@unique([mobile])
+  @@unique([mobile, email])
 }
 
 model Field {
@@ -84,16 +85,14 @@ model Field {
   numberOfWells Int
   name      String
   longitude Float
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
   latitude  Float
-  website   String
+  image     String?
   superintendent Superintendent
-  clientId  String @db.ObjectId
   well      Well[]
+  clientId  String @db.ObjectId
+  client    Client @relation(fields: [clientId], references: [id])
 
-  client Client @relation(fields: [clientId], references: [id])
+  createdDate        DateTime @default(now())
 }
 
 model Well {
@@ -113,8 +112,6 @@ model Well {
   turbingSize     Float
   flowStation     String
   image           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
   project         Project[]
 
   field  Field     @relation(fields: [fieldId], references: [id])
@@ -128,8 +125,6 @@ model Project {
   rig             String
   description     String
   image           String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
   report          Report[]
 
   well Well       @relation(fields: [wellId], references: [id])
@@ -140,8 +135,7 @@ model Report {
   projectId       String @db.ObjectId
   author          String
   image           String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
+
 
   project Project      @relation(fields: [projectId], references: [id])
 }

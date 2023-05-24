@@ -8,6 +8,7 @@ import { ClientDataProp } from '@/pages/client';
 import Image, { StaticImageData } from 'next/image';
 import useSetField from '@/hooks/useSetField';
 import router from 'next/router';
+import { format } from 'date-fns';
 
 interface ViewModalProps {
   open: () => void;
@@ -29,6 +30,10 @@ const ViewModal: FC<ViewModalProps> = ({
     setFieldFun.setField(clientId);
     router.push('/field');
   };
+
+  const formattedDate = clientData?.createdDate
+    ? format(new Date(clientData?.createdDate as string), 'dd-MM-yyyy')
+    : '';
   return (
     <>
       <Modal radius={'md'} size="lg" opened={opened} onClose={close}>
@@ -64,7 +69,10 @@ const ViewModal: FC<ViewModalProps> = ({
               onClick={close}
             />
             <Button
-              onClick={() => setFielD(clientData?.id)}
+              onClick={() => {
+                setFielD(clientData?.id);
+                close();
+              }}
               children="Fields"
               variant="outline_black"
               className="text-black font-lekton h-[28px] w-[122px]"
@@ -87,7 +95,7 @@ const ViewModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Contact Person</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.contactperson}
+                  {clientData?.contactPerson}
                 </div>
               </div>
             </div>
@@ -117,6 +125,17 @@ const ViewModal: FC<ViewModalProps> = ({
               <div className="space-y-4">
                 <div className="flex flex-row items-center gap-3">
                   <IoCall className="text-gray-500" />
+                  <span className="text-gray-400">Email</span>
+                </div>
+                <div className="text-lg font-lekton font-bold pl-8">
+                  {clientData?.email}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-row items-center justify-between mb-4">
+              <div className="space-y-4">
+                <div className="flex flex-row items-center gap-3">
+                  <IoCall className="text-gray-500" />
                   <span className="text-gray-400">Address</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
@@ -131,7 +150,7 @@ const ViewModal: FC<ViewModalProps> = ({
                   <span className="text-gray-400">Created Date</span>
                 </div>
                 <div className="text-lg font-lekton font-bold pl-8">
-                  {clientData?.createdDate}
+                  {formattedDate}
                 </div>
               </div>
             </div>

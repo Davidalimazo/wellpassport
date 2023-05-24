@@ -25,6 +25,8 @@ import router from 'next/router';
 import { requireAuthentication } from '@/utils/auth';
 import { toast } from 'react-hot-toast';
 import Header from '@/components/Header';
+import { Client } from '@prisma/client';
+import { format } from 'date-fns';
 
 // const MainDashboard = dynamic(
 //   async () => await import('@/components/dashboard/MainDashboard'),
@@ -34,23 +36,23 @@ import Header from '@/components/Header';
 export interface ClientDataProp {
   id: string;
   name: string;
-  contactperson: string;
+  contactPerson: string;
   website: string;
   image: any;
   mobile: string;
   address: string;
   createdDate: string;
+  email: string;
 }
 
 //@ts-ignore
 
-const ClientListUi: NextPage = ({ clients }) => {
+const ClientListUi: NextPage = ({ document }) => {
   const itemData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-  const [index, setIndex] = useState('0');
+  const [index, setIndex] = useState(0);
+  const [clientId, setClientId] = useState('');
   const { status, data } = useSession();
-  const [cachedData, setCachedDta] = useState([...clientData]);
-
-  console.log(clients);
+  const [cachedData, setCachedDta] = useState([...document]);
 
   const [currData, setCurrData] = useState<ClientDataProp | null>(
     cachedData.length > 0 ? cachedData[0] : null
@@ -76,7 +78,7 @@ const ClientListUi: NextPage = ({ clients }) => {
     { open: openDeleteModal, close: onCloseDelete },
   ] = useDisclosure(false);
 
-  const hadnleClick = (idx: string) => {
+  const hadnleClick = (idx: number) => {
     setIndex(idx);
   };
 
@@ -125,74 +127,71 @@ const ClientListUi: NextPage = ({ clients }) => {
           ) : null}
         </div>
         <div className="bg-[#FFFCFC] rounded-lg mx-6 p-6">
-          {cachedData.map(
-            ({ id, name, contactperson, website, image, ...rest }) => (
-              <div
-                className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
-                  id === index ? 'ring-2 ring-red-500' : 'ring-2 ring-[#E7E6E6]'
-                }`}
-                key={id}
-                onClick={() => {
-                  hadnleClick(id);
-                  setCurrData({
-                    id,
-                    name,
-                    contactperson,
-                    website,
-                    image,
-                    ...rest,
-                  });
-                }}
-              >
-                <div className="flex flex-row gap-6 items-center">
-                  <Image src={image} width={130} height={89} alt="exxon" />
-                  <div className="text-lg font-lekton font-semibold hidden sm:block md:block lg:block">
-                    <div className="">
-                      <span className="text-grey-200">Client Name: </span>
-                      <span className="font-bold">{name}</span>
-                    </div>
-                    <div className="">
-                      <span className="text-grey-200">Contact Person: </span>
-                      <span className="font-semibold">{contactperson}</span>
-                    </div>
-                    <div className="">
-                      <span className="text-grey-200">Website: </span>
-                      <Link
-                        href={website}
-                        target="_blank"
-                        className="font-bold underline"
-                      >
-                        {website}
-                      </Link>
-                    </div>
+          {cachedData.map((item: any) => (
+            <div
+              className={`cursor-pointer flex flex-row gap-3 justify-between px-4 py-4 rounded-xl mb-6 ${
+                item.id === index
+                  ? 'ring-2 ring-red-500'
+                  : 'ring-2 ring-[#E7E6E6]'
+              }`}
+              key={item.id}
+              onClick={() => {
+                hadnleClick(item.id);
+                setCurrData({
+                  id: item.id,
+                  name: item.name,
+                  contactperson: item.contactPerson,
+                  website: item.website,
+                  image: item?.image,
+                  ...item,
+                });
+              }}
+            >
+              <div className="flex flex-row gap-6 items-center">
+                <Image src={mobil} width={130} height={89} alt="exxon" />
+                <div className="text-lg font-lekton font-semibold hidden sm:block md:block lg:block">
+                  <div className="">
+                    <span className="text-grey-200">Client Name: </span>
+                    <span className="font-bold">{item.name}</span>
+                  </div>
+                  <div className="">
+                    <span className="text-grey-200">Contact Person: </span>
+                    <span className="font-semibold">{item.contactPerson}</span>
+                  </div>
+                  <div className="">
+                    <span className="text-grey-200">Website: </span>
+                    <Link
+                      href={item.website}
+                      target="_blank"
+                      className="font-bold underline"
+                    >
+                      {item.website}
+                    </Link>
                   </div>
                 </div>
-                {index === id ? (
-                  <div className="text-lg flex flex-row gap-3">
-                    {data?.user.role === 'ADMIN' ? (
-                      <>
-                        <AiFillEye onClick={open} />
-
-                        <AiFillEdit onClick={openEditModal} />
-
-                        <MdDeleteForever onClick={openDeleteModal} />
-                        <DeleteModal
-                          open={openDeleteModal}
-                          opened={openedDeleteModal}
-                          close={onCloseDelete}
-                          text="Are you sure you want to delete this client"
-                          id={id}
-                          onDelete={() => handleDelete(id)}
-                        />
-                      </>
-                    ) : (
-                      <AiFillEye onClick={open} />
-                    )}
-                  </div>
-                ) : null}
               </div>
-            )
-          )}
+              {index === item.id ? (
+                <div className="text-lg flex flex-row gap-3">
+                  {data?.user.role === 'ADMIN' ? (
+                    <>
+                      <AiFillEye onClick={open} />
+
+                      <AiFillEdit onClick={openEditModal} />
+
+                      <MdDeleteForever
+                        onClick={() => {
+                          openDeleteModal();
+                          setClientId(item.id);
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <AiFillEye onClick={open} />
+                  )}
+                </div>
+              ) : null}
+            </div>
+          ))}
           <div className="my-6 flex flex-row items-center justify-center">
             <PaginatedItems itemsPerPage={4} items={itemData} />
           </div>
@@ -219,6 +218,14 @@ const ClientListUi: NextPage = ({ clients }) => {
         clientData={currData}
         isEdit
       />
+      <DeleteModal
+        open={openDeleteModal}
+        opened={openedDeleteModal}
+        close={onCloseDelete}
+        text="Are you sure you want to delete this client"
+        id={clientId}
+        onDelete={() => handleDelete(clientId)}
+      />
     </>
   );
 };
@@ -241,6 +248,17 @@ const ClientListUi: NextPage = ({ clients }) => {
 
 export default ClientListUi;
 
+type SafeUser = {
+  id: string;
+  name: string;
+  contactPerson: string;
+  mobile: string;
+  website: string;
+  address: string;
+  image: string;
+  field: [];
+}[];
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
 
@@ -254,8 +272,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-  const clients = await prisma.client.findMany();
+
+  const documents = await prisma.client.findMany({});
+  const clients = documents.map((user) => ({
+    ...user,
+    createdDate: user.createdDate.toString(),
+  }));
+
   return {
-    props: { session, clients },
+    props: { session, document: clients },
   };
 }
